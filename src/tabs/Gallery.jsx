@@ -10,6 +10,7 @@ export class Gallery extends Component {
     images: [],
     total: 0,
     error: null,
+    // isEmpty: false,
   };
 
   componentDidUpdate(_, prevState) {
@@ -29,6 +30,9 @@ export class Gallery extends Component {
         images: [...images, ...photos],
         total: total_results,
       }));
+      // if (photos.length === 0) {
+      //   this.setState({ isEmpty: true });
+      // }
     } catch (error) {
       this.setState({ error: true });
     }
@@ -43,12 +47,33 @@ export class Gallery extends Component {
       error: null,
     });
   };
+  onLoadMoreButtonClick = () => {
+    this.setState(prevState => ({
+      page: prevState.page + 1,
+    }));
+  };
 
   render() {
+    const { images, total, error, value } = this.state;
     return (
       <>
         <SearchForm onSubmit={this.onSubmit} />
-        {/* <Text textAlign="center">Sorry. There are no images ... 😭</Text> */}
+        {error && <Text>Error</Text>}
+        {value !== '' && images.length === 0 && <Text>No images</Text>}
+        {images.length > 0 && (
+          <Grid>
+            {images.map(({ id, avg_color, alt, src }) => (
+              <GridItem key={id}>
+                <CardItem color={avg_color}>
+                  <img src={src.large} alt={alt} />
+                </CardItem>
+              </GridItem>
+            ))}
+          </Grid>
+        )}
+        {images.length > 0 && images.length < total && (
+          <Button onClick={this.onLoadMoreButtonClick}>Load more</Button>
+        )}
       </>
     );
   }
