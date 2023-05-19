@@ -9,12 +9,12 @@ export class SearchForm extends Component {
   };
 
   onInputChange = e => {
-    this.setState({ search: e.target.value.trim().toLowerCase() });
+    this.setState({ search: e.target.value });
   };
 
   onSubmitForm = e => {
     e.preventDefault();
-    this.props.onSubmit(this.state.search);
+    this.props.onSubmit(this.state.search.trim().toLowerCase());
     this.setState({ search: '' });
   };
 
